@@ -36,8 +36,8 @@ IF(WIN32)
 	set_target_properties(cmmk_shared PROPERTIES OUTPUT_NAME libcmmk)
 	set_target_properties(cmmk_static PROPERTIES OUTPUT_NAME libcmmk)
 ELSE()
-	set_target_properties(cmmk_shared PROPERTIES OUTPUT_NAME cmmk)
-	set_target_properties(cmmk_static PROPERTIES OUTPUT_NAME cmmk)
+        set_target_properties(cmmk_shared PROPERTIES OUTPUT_NAME cmmk)
+        set_target_properties(cmmk_static PROPERTIES OUTPUT_NAME cmmk)
 ENDIF()
 
 #
