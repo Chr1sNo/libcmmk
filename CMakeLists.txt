@@ -43,7 +43,7 @@ ENDIF()
 #
 # Samples and debug
 #
-add_subdirectory(test)
+add_subdirectory(test EXCLUDE_FROM_ALL)
 
 #
 # Install section
@@ -51,13 +51,13 @@ add_subdirectory(test)
 
 IF(NOT WIN32)
 
-	include(GNUInstallDirs)
+        include(GNUInstallDirs)
 
-	install(TARGETS cmmk_shared cmmk_static cmmk_obj EXPORT cmmk-targets
-		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-		PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+        install(TARGETS cmmk_shared cmmk_static cmmk_obj EXPORT cmmk-targets
+                LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
+                ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/${PROJECT_NAME}
+                PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 
-	install(FILES ${CMAKE_BINARY_DIR}/include/libcmmk/libcmmk-config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+        install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/libcmmk/libcmmk-config.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 ENDIF()
