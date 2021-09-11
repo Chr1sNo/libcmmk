@@ -212,6 +212,7 @@ int cmmk_find_device(int *product)
 		CMMK_USB_MASTERKEYS_PRO_L_WHITE,
 		CMMK_USB_MASTERKEYS_SK630,
 		CMMK_USB_MASTERKEYS_SK650,
+        CMMK_USB_MASTERKEYS_SK650_WHITE,
         CMMK_USB_MASTERKEYS_CK550,
     };
 
@@ -257,12 +258,30 @@ static int cmmk_try_determine_layout(struct cmmk *dev, int product)
 
 	switch ((enum cmmk_product) product) {
 		case CMMK_USB_MASTERKEYS_PRO_L:
-		case CMMK_USB_MASTERKEYS_PRO_L_WHITE: device_model = CMMK_PRODUCT_MASTERKEYS_PRO_L; break;
-		case CMMK_USB_MASTERKEYS_PRO_S: device_model = CMMK_PRODUCT_MASTERKEYS_PRO_S; break;
-		case CMMK_USB_MASTERKEYS_MK750: device_model = CMMK_PRODUCT_MASTERKEYS_MK750; break;
-		case CMMK_USB_MASTERKEYS_SK630: device_model = CMMK_PRODUCT_MASTERKEYS_SK630; break;
-		case CMMK_USB_MASTERKEYS_SK650: device_model = CMMK_PRODUCT_MASTERKEYS_SK650; break;
-        case CMMK_USB_MASTERKEYS_CK550: device_model = CMMK_PRODUCT_MASTERKEYS_CK550; break;
+        case CMMK_USB_MASTERKEYS_PRO_L_WHITE:
+            device_model = CMMK_PRODUCT_MASTERKEYS_PRO_L;
+            break;
+
+        case CMMK_USB_MASTERKEYS_PRO_S:
+            device_model = CMMK_PRODUCT_MASTERKEYS_PRO_S;
+            break;
+
+        case CMMK_USB_MASTERKEYS_MK750:
+            device_model = CMMK_PRODUCT_MASTERKEYS_MK750;
+            break;
+
+        case CMMK_USB_MASTERKEYS_SK630:
+            device_model = CMMK_PRODUCT_MASTERKEYS_SK630;
+            break;
+
+        case CMMK_USB_MASTERKEYS_SK650:
+        case CMMK_USB_MASTERKEYS_SK650_WHITE:
+            device_model = CMMK_PRODUCT_MASTERKEYS_SK650;
+            break;
+
+        case CMMK_USB_MASTERKEYS_CK550:
+            device_model = CMMK_PRODUCT_MASTERKEYS_CK550;
+            break;
     }
 
 	if (general_layout == CMMK_LAYOUT_TYPE_ANSI) {
@@ -426,6 +445,18 @@ enum cmmk_product_type cmmk_get_device_model(struct cmmk *dev)
 	case CMMK_LAYOUT_US_MK750:
 	case CMMK_LAYOUT_EU_MK750:
 		return CMMK_PRODUCT_MASTERKEYS_MK750;
+
+    case CMMK_LAYOUT_US_SK630:
+    case CMMK_LAYOUT_EU_SK630:
+        return CMMK_PRODUCT_MASTERKEYS_SK630;
+
+    case CMMK_LAYOUT_US_SK650:
+    case CMMK_LAYOUT_EU_SK650:
+        return CMMK_PRODUCT_MASTERKEYS_SK650;
+
+    case CMMK_LAYOUT_US_CK550:
+    case CMMK_LAYOUT_EU_CK550:
+        return CMMK_PRODUCT_MASTERKEYS_CK550;
 	}
 
 	assert(0 && "unreachable");
@@ -463,6 +494,7 @@ const char * cmmk_product_to_str(int product)
 		case CMMK_USB_MASTERKEYS_MK750: return "Cooler Master Masterkeys MK750";
 		case CMMK_USB_MASTERKEYS_SK630: return "Cooler Master Masterkeys SK630";
 		case CMMK_USB_MASTERKEYS_SK650: return "Cooler Master Masterkeys SK650";
+        case CMMK_USB_MASTERKEYS_SK650_WHITE: return "Cooler Master Masterkeys SK650 White";
         case CMMK_USB_MASTERKEYS_CK550: return "Cooler Master Masterkeys CK550";
     }
 
