@@ -38,6 +38,7 @@ typedef int16_t keyboard_layout[CMMK_ROWS_MAX][CMMK_COLS_MAX];
 #include "mappings/iso/sk630.h"
 #include "mappings/iso/sk650.h"
 #include "mappings/iso/ck550.h"
+#include "mappings/iso/ck530.h"
 
 #include "mappings/ansi/pro_s.h"
 #include "mappings/ansi/pro_l.h"
@@ -45,20 +46,23 @@ typedef int16_t keyboard_layout[CMMK_ROWS_MAX][CMMK_COLS_MAX];
 #include "mappings/ansi/sk630.h"
 #include "mappings/ansi/sk650.h"
 #include "mappings/ansi/ck550.h"
+#include "mappings/ansi/ck530.h"
 
 static keyboard_layout const *keyboard_layouts[] = {
-	[CMMK_LAYOUT_US_S] = &layout_ansi_pro_s,
-	[CMMK_LAYOUT_US_L] = &layout_ansi_pro_l,
-	[CMMK_LAYOUT_US_MK750] = &layout_ansi_mk750,
-	[CMMK_LAYOUT_US_SK630] = &layout_ansi_sk630,
-	[CMMK_LAYOUT_US_SK650] = &layout_ansi_sk650,
+    [CMMK_LAYOUT_US_S] = &layout_ansi_pro_s,
+    [CMMK_LAYOUT_US_L] = &layout_ansi_pro_l,
+    [CMMK_LAYOUT_US_MK750] = &layout_ansi_mk750,
+    [CMMK_LAYOUT_US_SK630] = &layout_ansi_sk630,
+    [CMMK_LAYOUT_US_SK650] = &layout_ansi_sk650,
     [CMMK_LAYOUT_US_CK550] = &layout_ansi_ck550,
+    [CMMK_LAYOUT_US_CK530] = &layout_ansi_ck530,
     [CMMK_LAYOUT_EU_S] = &layout_iso_pro_s,
-	[CMMK_LAYOUT_EU_L] = &layout_iso_pro_l,
-	[CMMK_LAYOUT_EU_MK750] = &layout_iso_mk750,
-	[CMMK_LAYOUT_EU_SK630] = &layout_iso_sk630,
-	[CMMK_LAYOUT_EU_SK650] = &layout_iso_sk650,
+    [CMMK_LAYOUT_EU_L] = &layout_iso_pro_l,
+    [CMMK_LAYOUT_EU_MK750] = &layout_iso_mk750,
+    [CMMK_LAYOUT_EU_SK630] = &layout_iso_sk630,
+    [CMMK_LAYOUT_EU_SK650] = &layout_iso_sk650,
     [CMMK_LAYOUT_EU_CK550] = &layout_iso_ck550,
+    [CMMK_LAYOUT_EU_CK530] = &layout_iso_ck530,
 };
 
 /* Some global definitions */
@@ -214,6 +218,7 @@ int cmmk_find_device(int *product)
 		CMMK_USB_MASTERKEYS_SK650,
         CMMK_USB_MASTERKEYS_SK650_WHITE,
         CMMK_USB_MASTERKEYS_CK550,
+        CMMK_USB_MASTERKEYS_CK530,
     };
 
 	struct hid_device_info *list = NULL;
@@ -248,7 +253,7 @@ static int cmmk_try_determine_layout(struct cmmk *dev, int product)
 	enum cmmk_product_type device_model;
 
 	if (cmmk_get_firmware_version(dev, fw, sizeof(fw)) == 0) {
-		if (fw[0] == '1') {
+        if (fw[0] == 0x01) {
 			/* ANSI firmware */
 			general_layout = CMMK_LAYOUT_TYPE_ANSI;
 		} else {
@@ -282,7 +287,11 @@ static int cmmk_try_determine_layout(struct cmmk *dev, int product)
         case CMMK_USB_MASTERKEYS_CK550:
             device_model = CMMK_PRODUCT_MASTERKEYS_CK550;
             break;
-    }
+
+        case CMMK_USB_MASTERKEYS_CK530:
+            device_model = CMMK_PRODUCT_MASTERKEYS_CK530;
+            break;
+}
 
 	if (general_layout == CMMK_LAYOUT_TYPE_ANSI) {
 		switch (device_model) {
@@ -292,6 +301,7 @@ static int cmmk_try_determine_layout(struct cmmk *dev, int product)
 			case CMMK_PRODUCT_MASTERKEYS_SK630: return CMMK_LAYOUT_US_SK630;
             case CMMK_PRODUCT_MASTERKEYS_SK650: return CMMK_LAYOUT_US_SK650;
             case CMMK_PRODUCT_MASTERKEYS_CK550: return CMMK_LAYOUT_US_CK550;
+            case CMMK_PRODUCT_MASTERKEYS_CK530: return CMMK_LAYOUT_US_CK530;
         }
 	} else {
 		switch (device_model) {
@@ -301,6 +311,7 @@ static int cmmk_try_determine_layout(struct cmmk *dev, int product)
 			case CMMK_PRODUCT_MASTERKEYS_SK630: return CMMK_LAYOUT_EU_SK630;
 			case CMMK_PRODUCT_MASTERKEYS_SK650: return CMMK_LAYOUT_EU_SK650;
             case CMMK_PRODUCT_MASTERKEYS_CK550: return CMMK_LAYOUT_EU_CK550;
+            case CMMK_PRODUCT_MASTERKEYS_CK530: return CMMK_LAYOUT_EU_CK530;
         }
 	}
 
@@ -457,7 +468,11 @@ enum cmmk_product_type cmmk_get_device_model(struct cmmk *dev)
     case CMMK_LAYOUT_US_CK550:
     case CMMK_LAYOUT_EU_CK550:
         return CMMK_PRODUCT_MASTERKEYS_CK550;
-	}
+
+    case CMMK_LAYOUT_US_CK530:
+    case CMMK_LAYOUT_EU_CK530:
+        return CMMK_PRODUCT_MASTERKEYS_CK550;
+}
 
 	assert(0 && "unreachable");
 }
@@ -471,6 +486,7 @@ enum cmmk_layout_type cmmk_get_device_layout(struct cmmk *dev)
     case CMMK_LAYOUT_US_SK630:
     case CMMK_LAYOUT_US_SK650:
     case CMMK_LAYOUT_US_CK550:
+    case CMMK_LAYOUT_US_CK530:
         return CMMK_LAYOUT_TYPE_ANSI;
 
 	case CMMK_LAYOUT_EU_S:
@@ -479,6 +495,7 @@ enum cmmk_layout_type cmmk_get_device_layout(struct cmmk *dev)
     case CMMK_LAYOUT_EU_SK630:
     case CMMK_LAYOUT_EU_SK650:
     case CMMK_LAYOUT_EU_CK550:
+    case CMMK_LAYOUT_EU_CK530:
         return CMMK_LAYOUT_TYPE_ISO;
 	}
 
@@ -496,6 +513,7 @@ const char * cmmk_product_to_str(int product)
 		case CMMK_USB_MASTERKEYS_SK650: return "Cooler Master Masterkeys SK650";
         case CMMK_USB_MASTERKEYS_SK650_WHITE: return "Cooler Master Masterkeys SK650 White";
         case CMMK_USB_MASTERKEYS_CK550: return "Cooler Master Masterkeys CK550";
+        case CMMK_USB_MASTERKEYS_CK530: return "Cooler Master Masterkeys CK530";
     }
 
 	return "unknown";
@@ -510,6 +528,7 @@ const char * cmmk_layout_to_str(int layout)
 		case CMMK_LAYOUT_US_SK630:
 		case CMMK_LAYOUT_US_SK650:
         case CMMK_LAYOUT_US_CK550:
+        case CMMK_LAYOUT_US_CK530:
             return "US";
 		case CMMK_LAYOUT_EU_S:
 		case CMMK_LAYOUT_EU_L:
@@ -517,7 +536,8 @@ const char * cmmk_layout_to_str(int layout)
 		case CMMK_LAYOUT_EU_SK630:
 		case CMMK_LAYOUT_EU_SK650:
         case CMMK_LAYOUT_EU_CK550:
-			return "EU";
+        case CMMK_LAYOUT_EU_CK530:
+            return "EU";
 
 		case CMMK_LAYOUT_INVAL:
 			return "invalid";
