@@ -13,8 +13,8 @@ configure_file(config.h.in include/libcmmk/libcmmk-config.h)
 find_package(HIDAPI QUIET COMPONENTS libusb)
 
 target_include_directories(cmmk_obj
-	PUBLIC
-		$<INSTALL_INTERFACE:include>
+        PUBLIC
+                $<INSTALL_INTERFACE:include>
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/src)

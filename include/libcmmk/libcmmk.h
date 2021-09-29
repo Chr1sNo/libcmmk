@@ -21,6 +21,12 @@
 
 #include <stdint.h>
 
+#ifdef _WIN32
+    #define CMMK_EXPORT __declspec(dllexport)
+#else
+    #define CMMK_EXPORT
+#endif
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -282,7 +288,7 @@ struct cmmk_effect_snake {
 
 /* Tries to find a connected, compatible device. Returns 0 and sets *product to the
  * first device it finds */
-int cmmk_find_device(int *product);
+CMMK_EXPORT int cmmk_find_device(int *product);
 
 /*
  * If layout = -1, try to automatically determine the layout. Otherwise, use one of the values
@@ -293,43 +299,43 @@ int cmmk_find_device(int *product);
  *
  * If layout autodetection fails, 1 is returned and cmmk_detach is called implicitely.
  */
-int cmmk_attach(struct cmmk *dev, int product, int layout);
-int cmmk_attach_path(struct cmmk *dev, char const *path, int product, int layout);
-int cmmk_detach(struct cmmk *dev);
+CMMK_EXPORT int cmmk_attach(struct cmmk *dev, int product, int layout);
+CMMK_EXPORT int cmmk_attach_path(struct cmmk *dev, char const *path, int product, int layout);
+CMMK_EXPORT int cmmk_detach(struct cmmk *dev);
 
 /* Resets the layout to the given ID and regenerates lookup tables */
-int cmmk_force_layout(struct cmmk *dev, int layout);
+CMMK_EXPORT int cmmk_force_layout(struct cmmk *dev, int layout);
 
 /* fw must be up to 8 bytes to read the entire version string */
-int cmmk_get_firmware_version(struct cmmk *dev, char *fw, size_t fwsiz);
+CMMK_EXPORT int cmmk_get_firmware_version(struct cmmk *dev, char *fw, size_t fwsiz);
 
-enum cmmk_product_type cmmk_get_device_model(struct cmmk *dev);
-enum cmmk_layout_type cmmk_get_device_layout(struct cmmk *dev);
+CMMK_EXPORT enum cmmk_product_type cmmk_get_device_model(struct cmmk *dev);
+CMMK_EXPORT enum cmmk_layout_type cmmk_get_device_layout(struct cmmk *dev);
 
-const char * cmmk_product_to_str(int product);
-const char * cmmk_layout_to_str(int layout);
+CMMK_EXPORT const char * cmmk_product_to_str(int product);
+CMMK_EXPORT const char * cmmk_layout_to_str(int layout);
 
 /*
  * Enter and leave direct control mode. Any control commands outside of control
  * mode are ignored. Enabling control mode while inside control mode will reset
  * active effect and allow direct control over LEDs.
  */
-int cmmk_set_control_mode(struct cmmk *dev, int mode);
+CMMK_EXPORT int cmmk_set_control_mode(struct cmmk *dev, int mode);
 
 /* Only meaningful in profile customization mode */
-int cmmk_get_active_profile(struct cmmk *dev, int *prof);
-int cmmk_set_active_profile(struct cmmk *dev, int prof);
+CMMK_EXPORT int cmmk_get_active_profile(struct cmmk *dev, int *prof);
+CMMK_EXPORT int cmmk_set_active_profile(struct cmmk *dev, int prof);
 
-int cmmk_save_active_profile(struct cmmk *dev);
+CMMK_EXPORT int cmmk_save_active_profile(struct cmmk *dev);
 
 /* Predefined effects */
-int cmmk_get_active_effect(struct cmmk *dev, enum cmmk_effect_id *eff);
-int cmmk_set_active_effect(struct cmmk *dev, enum cmmk_effect_id eff);
+CMMK_EXPORT int cmmk_get_active_effect(struct cmmk *dev, enum cmmk_effect_id *eff);
+CMMK_EXPORT int cmmk_set_active_effect(struct cmmk *dev, enum cmmk_effect_id eff);
 
 /* Fetch the list of enabled effects. Updates "n" with the number of effects actually
  * read.
  */
-int cmmk_get_enabled_effects(
+CMMK_EXPORT int cmmk_get_enabled_effects(
 	struct cmmk *dev,
 	enum cmmk_effect_id *effs,
 	size_t siz,
@@ -337,7 +343,7 @@ int cmmk_get_enabled_effects(
 
 /* Sets the list of enabled effects. Buffer size is implied and should of course be
  * at least as big as n. */
-int cmmk_set_enabled_effects(
+CMMK_EXPORT int cmmk_set_enabled_effects(
 	struct cmmk *dev,
 	enum cmmk_effect_id const *effs,
 	size_t n);
@@ -348,38 +354,38 @@ int cmmk_set_enabled_effects(
  * Caveeat: In customization mode, you can only change the configuration of an effect when it is
  * currently active. This does not seem to be the case in effects mode.
  */
-int cmmk_get_effect(struct cmmk *dev, enum cmmk_effect_id id, struct cmmk_generic_effect *eff);
-int cmmk_set_effect(struct cmmk *dev, enum cmmk_effect_id id, struct cmmk_generic_effect const *eff);
+CMMK_EXPORT int cmmk_get_effect(struct cmmk *dev, enum cmmk_effect_id id, struct cmmk_generic_effect *eff);
+CMMK_EXPORT int cmmk_set_effect(struct cmmk *dev, enum cmmk_effect_id id, struct cmmk_generic_effect const *eff);
 
-int cmmk_get_effect_fully_lit(struct cmmk *dev, struct cmmk_effect_fully_lit *eff);
-int cmmk_set_effect_fully_lit(struct cmmk *dev, struct cmmk_effect_fully_lit const *eff);
+CMMK_EXPORT int cmmk_get_effect_fully_lit(struct cmmk *dev, struct cmmk_effect_fully_lit *eff);
+CMMK_EXPORT int cmmk_set_effect_fully_lit(struct cmmk *dev, struct cmmk_effect_fully_lit const *eff);
 
-int cmmk_get_effect_breathe(struct cmmk *dev, struct cmmk_effect_breathe *eff);
-int cmmk_set_effect_breathe(struct cmmk *dev, struct cmmk_effect_breathe const *eff);
+CMMK_EXPORT int cmmk_get_effect_breathe(struct cmmk *dev, struct cmmk_effect_breathe *eff);
+CMMK_EXPORT int cmmk_set_effect_breathe(struct cmmk *dev, struct cmmk_effect_breathe const *eff);
 
-int cmmk_get_effect_cycle(struct cmmk *dev, struct cmmk_effect_cycle *eff);
-int cmmk_set_effect_cycle(struct cmmk *dev, struct cmmk_effect_cycle const *eff);
+CMMK_EXPORT int cmmk_get_effect_cycle(struct cmmk *dev, struct cmmk_effect_cycle *eff);
+CMMK_EXPORT int cmmk_set_effect_cycle(struct cmmk *dev, struct cmmk_effect_cycle const *eff);
 
-int cmmk_get_effect_single(struct cmmk *dev, struct cmmk_effect_single *eff);
-int cmmk_set_effect_single(struct cmmk *dev, struct cmmk_effect_single const *eff);
+CMMK_EXPORT int cmmk_get_effect_single(struct cmmk *dev, struct cmmk_effect_single *eff);
+CMMK_EXPORT int cmmk_set_effect_single(struct cmmk *dev, struct cmmk_effect_single const *eff);
 
-int cmmk_get_effect_wave(struct cmmk *dev, struct cmmk_effect_wave *eff);
-int cmmk_set_effect_wave(struct cmmk *dev, struct cmmk_effect_wave const *eff);
+CMMK_EXPORT int cmmk_get_effect_wave(struct cmmk *dev, struct cmmk_effect_wave *eff);
+CMMK_EXPORT int cmmk_set_effect_wave(struct cmmk *dev, struct cmmk_effect_wave const *eff);
 
-int cmmk_get_effect_ripple(struct cmmk *dev, struct cmmk_effect_ripple *eff);
-int cmmk_set_effect_ripple(struct cmmk *dev, struct cmmk_effect_ripple const *eff);
+CMMK_EXPORT int cmmk_get_effect_ripple(struct cmmk *dev, struct cmmk_effect_ripple *eff);
+CMMK_EXPORT int cmmk_set_effect_ripple(struct cmmk *dev, struct cmmk_effect_ripple const *eff);
 
-int cmmk_get_effect_cross(struct cmmk *dev, struct cmmk_effect_cross *eff);
-int cmmk_set_effect_cross(struct cmmk *dev, struct cmmk_effect_cross const *eff);
+CMMK_EXPORT int cmmk_get_effect_cross(struct cmmk *dev, struct cmmk_effect_cross *eff);
+CMMK_EXPORT int cmmk_set_effect_cross(struct cmmk *dev, struct cmmk_effect_cross const *eff);
 
-int cmmk_get_effect_raindrops(struct cmmk *dev, struct cmmk_effect_raindrops *eff);
-int cmmk_set_effect_raindrops(struct cmmk *dev, struct cmmk_effect_raindrops const *eff);
+CMMK_EXPORT int cmmk_get_effect_raindrops(struct cmmk *dev, struct cmmk_effect_raindrops *eff);
+CMMK_EXPORT int cmmk_set_effect_raindrops(struct cmmk *dev, struct cmmk_effect_raindrops const *eff);
 
-int cmmk_get_effect_stars(struct cmmk *dev, struct cmmk_effect_stars *eff);
-int cmmk_set_effect_stars(struct cmmk *dev, struct cmmk_effect_stars const *eff);
+CMMK_EXPORT int cmmk_get_effect_stars(struct cmmk *dev, struct cmmk_effect_stars *eff);
+CMMK_EXPORT int cmmk_set_effect_stars(struct cmmk *dev, struct cmmk_effect_stars const *eff);
 
-int cmmk_get_effect_snake(struct cmmk *dev, struct cmmk_effect_snake *eff);
-int cmmk_set_effect_snake(struct cmmk *dev, struct cmmk_effect_snake const *eff);
+CMMK_EXPORT int cmmk_get_effect_snake(struct cmmk *dev, struct cmmk_effect_snake *eff);
+CMMK_EXPORT int cmmk_set_effect_snake(struct cmmk *dev, struct cmmk_effect_snake const *eff);
 
 /*
  * colmap *must* be at least 6x22. Otherwise, segmentation faults ensue.
@@ -387,33 +393,33 @@ int cmmk_set_effect_snake(struct cmmk *dev, struct cmmk_effect_snake const *eff)
  * CAVEAT: The result will be wrong immediately after switching profiles. A few milliseconds
  * of delay need to be inserted after the switch and before the query.
  */
-int cmmk_get_customized_leds(struct cmmk *dev, struct cmmk_color_matrix *colmap);
-int cmmk_set_customized_leds(struct cmmk *dev, struct cmmk_color_matrix const *colmap);
+CMMK_EXPORT int cmmk_get_customized_leds(struct cmmk *dev, struct cmmk_color_matrix *colmap);
+CMMK_EXPORT int cmmk_set_customized_leds(struct cmmk *dev, struct cmmk_color_matrix const *colmap);
 
 /*
  * Switch multilayer mode on (active > 0) or off (active == 0).
  *
  * Affects effect configuration getters and setters.
  */
-int cmmk_switch_multilayer(struct cmmk *dev, int active);
+CMMK_EXPORT int cmmk_switch_multilayer(struct cmmk *dev, int active);
 
-int cmmk_get_multilayer_map(struct cmmk *dev, struct cmmk_effect_matrix *effmap);
-int cmmk_set_multilayer_map(struct cmmk *dev, struct cmmk_effect_matrix const *effmap);
+CMMK_EXPORT int cmmk_get_multilayer_map(struct cmmk *dev, struct cmmk_effect_matrix *effmap);
+CMMK_EXPORT int cmmk_set_multilayer_map(struct cmmk *dev, struct cmmk_effect_matrix const *effmap);
 
 /*
  * Set the single key `key' to the given color.
  */
-int cmmk_set_single_key_by_id(struct cmmk *dev, int key, struct rgb const *color);
+CMMK_EXPORT int cmmk_set_single_key_by_id(struct cmmk *dev, int key, struct rgb const *color);
 
 /*
  * Set the single key in row `row` and column `col` to the given color.
  */
-int cmmk_set_single_key(struct cmmk *dev, int row, int col, struct rgb const *color);
-int cmmk_lookup_key_id(struct cmmk *dev, int row, int col);
+CMMK_EXPORT int cmmk_set_single_key(struct cmmk *dev, int row, int col, struct rgb const *color);
+CMMK_EXPORT int cmmk_lookup_key_id(struct cmmk *dev, int row, int col);
 /*
  * Set the entire keyboard to the given color.
  */
-int cmmk_set_all_single(struct cmmk *dev, struct rgb const *col);
+CMMK_EXPORT int cmmk_set_all_single(struct cmmk *dev, struct rgb const *col);
 /*
  * Set the entire keyboard in one step from the given map.
  *
@@ -421,7 +427,7 @@ int cmmk_set_all_single(struct cmmk *dev, struct rgb const *col);
  * colmap[K_ESC] will address the ESC key, much like
  * set_single_key(..., K_ESC, ...) will.
  */
-int cmmk_set_leds(struct cmmk *dev, struct cmmk_color_matrix const *colmap);
+CMMK_EXPORT int cmmk_set_leds(struct cmmk *dev, struct cmmk_color_matrix const *colmap);
 
 #ifdef CMMK_DECLARE_DEBUG_FUNCTIONS
 	int cmmk_send_anything(struct cmmk *dev, unsigned char *data, size_t data_siz);
